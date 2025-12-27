@@ -65,4 +65,4 @@ class AIToolSchema(BaseModel):
     avg_rating: Optional[float] = 0.0
 
     class Config:
-        orm_mode = True
+        from_attributes = True
