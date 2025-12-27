@@ -1,9 +1,9 @@
 from typing import Annotated
-from uuid import UUID
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Path
 from starlette import status
-from model import AITool, AIToolSchema
+from model import Users, AITool, AIToolSchema, Review, ReviewStatus
 from database import SessionLocal
 from routers.auth import get_current_user
 
@@ -79,4 +79,4 @@ async def delete_tool(
 
     db.delete(db_tool)
     db.commit()
-    return {"message": "Tool deleted successfully"}
+    return
