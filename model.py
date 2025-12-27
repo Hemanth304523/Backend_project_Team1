@@ -11,6 +11,8 @@ from sqlalchemy.dialects.postgresql import UUID
  
 from database import Base
  
+# User Model
+
 class Users(Base):
     __tablename__ = 'users'
  
@@ -22,6 +24,8 @@ class Users(Base):
     hashed_password = Column(String)
     role = Column(String)
     
+
+# Tool Model
 class PricingType(enum.Enum):
 
     FREE = "FREE"
@@ -38,6 +42,8 @@ class AITool(Base):
     avg_rating = Column(Float, default=0.0)
 
  
+# Review Model
+
 class ReviewStatus(enum.Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
