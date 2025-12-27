@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime, timezone
+from operator import gt
 from typing import Annotated, Literal
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, EmailStr, constr
@@ -27,12 +28,12 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 logger = logging.getLogger("auth")
 logger.setLevel(logging.INFO)
 class CreateUserRequest(BaseModel):
-    username: constr(min_length=3, max_length=50)
+    username: str
     email: EmailStr
     first_name: str
     last_name: str
-    password: constr(min_length=6)
-    role: Literal['USER', 'ADMIN']
+    password: str
+    role: Literal['USER', 'ADMIN','user', 'admin']
 
 class Token(BaseModel):
     access_token: str
@@ -133,7 +134,7 @@ async def create_user(db: db_dependency,
     db.commit()
     db.refresh(create_user_model)
 
-    logger.info(f"User '{create_user_request.userngitame}' created successfully")
+    logger.info(f"User '{create_user_request.username}' created successfully")
     return {"msg": f"User '{create_user_request.username}' created successfully"}
 
 @router.post("/token", response_model=Token, summary="User login")
