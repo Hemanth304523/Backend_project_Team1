@@ -30,14 +30,15 @@ def get_pending_reviews(
     db: db_dependency,
     current_user: user_dependency
 ):
-    if current_user['role'] != 'admin':
+    if current_user['role'] == 'admin':
+        pending_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.PENDING).all()
+    elif current_user['role'] == 'user':
+        pending_reviews=db.query(Review).filter(Review.user_id==current_user['id']).filter(Review.approval_status == ReviewStatus.PENDING).all()
+    else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Not authorized to access this resource'
         )
- 
-    pending_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.PENDING).all()
- 
     return [
         {
             'id': review.id,
@@ -55,14 +56,15 @@ def get_approved_reviews(
     db: db_dependency,
     current_user: user_dependency
 ):
-    if current_user['role'] != 'admin':
+    if current_user['role'] == 'admin':
+        approved_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.APPROVED).all()
+    elif current_user['role'] == 'user':
+        approved_reviews=db.query(Review).filter(Review.user_id==current_user['id']).filter(Review.approval_status == ReviewStatus.APPROVED).all()
+    else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Not authorized to access this resource'
-        )
-
-    approved_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.APPROVED).all()
-
+        )   
     return [
         {
             'id': review.id,
@@ -98,38 +100,7 @@ def get_all_reviews(
         }
         for review in all_reviews
     ]
-@router.patch('/reviews/{review_id}/approve', status_code=status.HTTP_200_OK)
-def approve_review(
-    review_id: str = Path(..., description="The ID of the review to approve"),
-    db: db_dependency = ...,
-    current_user: user_dependency = ...
-):
-    if current_user['role'] != 'admin':
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Not authorized to access this resource'
-        )
- 
-    review = db.query(Review).filter(Review.id == review_id).first()
- 
-    if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Review not found'
-        )
- 
-    review.approval_status = ReviewStatus.APPROVED
-    db.commit()
-    db.refresh(review)
- 
-    return {
-        'id': review.id,
-        'tool_id': review.tool_id,
-        'user_id': review.user_id,
-        'user_rating': review.user_rating,
-        'comment': review.comment,
-        'approval_status': review.approval_status.value
-    }
+
 
 @router.patch("/approve_review/{review_id}", status_code=status.HTTP_200_OK)
 async def moderate_review(
@@ -139,11 +110,11 @@ async def moderate_review(
     current_user: user_dependency
 ):
     # Ensure the user is an admin
-    if current_user['role'] != 'admin':
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
-
+    if current_user['role'] == 'admin':
     # Fetch the review by ID
-    review = db.query(Review).filter(Review.id == review_id).first()
+        review = db.query(Review).filter(Review.id == review_id).first()
+    elif current_user['role']=='user':
+        review=db.query(Review).filter(Review.id==review_id).filter(Review.user_id==current_user['id']).first()
     if not review:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Review not found")
 
@@ -222,3 +193,4 @@ def reject_review(
         'comment': review.comment,
         'approval_status': review.approval_status.value
     }
+

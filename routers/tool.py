@@ -75,4 +75,23 @@ async def delete_tool(
     db.delete(db_tool)
     db.commit()
     return
+@router.get("/all_tools")
+def get_all_tools(
+    db: db_dependency,
+    current_user: user_dependency
+):
+    if current_user != None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
+    all_tools = db.query(AITool).all()
+
+    return [
+        {
+            'id': tool.id,
+            'name': tool.name,
+            'description': tool.description,
+            'category': tool.category,
+            'avg_rating': tool.avg_rating
+        }
+        for tool in all_tools
+    ]
