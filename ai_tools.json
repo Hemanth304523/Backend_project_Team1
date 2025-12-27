@@ -1,0 +1,338 @@
+[
+  {
+    "tool_name": "ChatGPT",
+    "use_case": "Conversational AI for text generation, Q&A, and assistance",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.8
+  },
+  {
+    "tool_name": "Grammarly",
+    "use_case": "Grammar and spell checking for writing assistance",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.5
+  },
+  {
+    "tool_name": "DALL·E",
+    "use_case": "Image generation from text prompts",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.6
+  },
+  {
+    "tool_name": "Copy.ai",
+    "use_case": "AI-powered copywriting and marketing content creation",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "Jasper AI",
+    "use_case": "Content generation and marketing copy",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Canva AI",
+    "use_case": "AI-assisted design and image editing",
+    "category": "Computer Vision",
+    "pricing_type": "Free",
+    "avg_rating": 4.5
+  },
+  {
+    "tool_name": "Otter.ai",
+    "use_case": "Automatic transcription and meeting notes",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Runway ML",
+    "use_case": "Video editing with AI effects and automation",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "Synthesia",
+    "use_case": "AI video generation with avatars and voiceovers",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Replika",
+    "use_case": "AI-powered chatbot for companionship",
+    "category": "NLP",
+    "pricing_type": "Free",
+    "avg_rating": 4.0
+  },
+  {
+    "tool_name": "MidJourney",
+    "use_case": "AI image generation and artistic creation",
+    "category": "Computer Vision",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.7
+  },
+  {
+    "tool_name": "Notion AI",
+    "use_case": "Smart note-taking and content suggestions",
+    "category": "Productivity",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "DeepL Translator",
+    "use_case": "AI-powered translation with high accuracy",
+    "category": "NLP",
+    "pricing_type": "Free",
+    "avg_rating": 4.6
+  },
+  {
+    "tool_name": "Hugging Face",
+    "use_case": "AI model hosting, NLP pipelines, and ML tools",
+    "category": "NLP",
+    "pricing_type": "Free",
+    "avg_rating": 4.5
+  },
+  {
+    "tool_name": "Eleven Labs",
+    "use_case": "AI text-to-speech voice generation",
+    "category": "Audio",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Pictory",
+    "use_case": "Video summarization and creation from scripts",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "Lumen5",
+    "use_case": "Social media video creation with AI",
+    "category": "Computer Vision",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Jukebox AI",
+    "use_case": "AI music generation",
+    "category": "Audio",
+    "pricing_type": "Free",
+    "avg_rating": 4.0
+  },
+  {
+    "tool_name": "Scribe AI",
+    "use_case": "Automated workflow documentation",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "Claude AI",
+    "use_case": "Advanced AI assistant for text and reasoning",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.5
+  },
+  {
+    "tool_name": "Zapier AI",
+    "use_case": "Automation of workflows using AI",
+    "category": "Productivity",
+    "pricing_type": "Paid",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Codeium",
+    "use_case": "AI code assistant and autocompletion",
+    "category": "Dev Tools",
+    "pricing_type": "Free",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Tabnine",
+    "use_case": "AI coding assistant for multiple languages",
+    "category": "Dev Tools",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "Fireflies AI",
+    "use_case": "Meeting transcription and summaries",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "CopyMonkey",
+    "use_case": "E-commerce product description generation",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Scribbr AI",
+    "use_case": "AI-assisted academic writing and plagiarism checking",
+    "category": "Productivity",
+    "pricing_type": "Paid",
+    "avg_rating": 4.5
+  },
+  {
+    "tool_name": "Neural.love",
+    "use_case": "AI image enhancement and upscaling",
+    "category": "Computer Vision",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Descript",
+    "use_case": "Audio/video editing with AI transcription",
+    "category": "Audio",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Inferkit",
+    "use_case": "AI text generation for creative writing",
+    "category": "NLP",
+    "pricing_type": "Paid",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "AI Dungeon",
+    "use_case": "AI-generated interactive storytelling",
+    "category": "NLP",
+    "pricing_type": "Free",
+    "avg_rating": 4.0
+  },
+  {
+    "tool_name": "Magenta Studio",
+    "use_case": "AI music creation and tools",
+    "category": "Audio",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "DeepAI",
+    "use_case": "General AI APIs for text, image, and video",
+    "category": "NLP",
+    "pricing_type": "Free",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "PromptPerfect",
+    "use_case": "Optimizing AI prompts for better output",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "VoiceMod",
+    "use_case": "Real-time AI voice changing and effects",
+    "category": "Audio",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "LALAL.AI",
+    "use_case": "AI music stem separation",
+    "category": "Audio",
+    "pricing_type": "Paid",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "Beautiful.ai",
+    "use_case": "AI-assisted presentation creation",
+    "category": "Productivity",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Sloyd",
+    "use_case": "3D model generation for games and AR",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.0
+  },
+  {
+    "tool_name": "Scenario AI",
+    "use_case": "AI-generated synthetic images for marketing",
+    "category": "Computer Vision",
+    "pricing_type": "Paid",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "Kive",
+    "use_case": "AI-powered creative asset management",
+    "category": "Productivity",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "Veed.io",
+    "use_case": "AI video editing and subtitle generation",
+    "category": "Computer Vision",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.4
+  },
+  {
+    "tool_name": "Loci AI",
+    "use_case": "AI data labeling for machine learning",
+    "category": "Dev Tools",
+    "pricing_type": "Paid",
+    "avg_rating": 4.0
+  },
+  {
+    "tool_name": "Photoroom",
+    "use_case": "AI background removal and product photos",
+    "category": "Computer Vision",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Reface",
+    "use_case": "Face swapping in images and videos using AI",
+    "category": "Computer Vision",
+    "pricing_type": "Free",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "Tome AI",
+    "use_case": "AI-powered storytelling and presentation assistant",
+    "category": "Productivity",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.3
+  },
+  {
+    "tool_name": "Bloop AI",
+    "use_case": "Code search and AI coding assistant",
+    "category": "Dev Tools",
+    "pricing_type": "Free",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Kreateable",
+    "use_case": "AI-generated design mockups and templates",
+    "category": "Computer Vision",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.1
+  },
+  {
+    "tool_name": "AISEO",
+    "use_case": "AI-assisted SEO content optimization",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.2
+  },
+  {
+    "tool_name": "Writesonic",
+    "use_case": "AI copywriting for blogs, ads, and social media",
+    "category": "NLP",
+    "pricing_type": "Subscription",
+    "avg_rating": 4.3
+  }
+]
