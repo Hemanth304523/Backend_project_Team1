@@ -1,10 +1,17 @@
 import enum
 from uuid import uuid4
-from sqlalchemy import Column, Float, Integer, String, Text, JSON, Enum
-from sqlalchemy.dialects.postgresql import UUID
 from database import Base
+from sqlalchemy import UUID, Column, Float, Integer, String, Boolean, ForeignKey, Text
+import enum
+from uuid import uuid4
+from datetime import datetime
+ 
+from sqlalchemy import Column, Integer, Text, DateTime, Enum as SqlEnum, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+import enum
+from database import Base
+ 
 
-# User Model
 
 class Users(Base):
     __tablename__ = 'users'
@@ -40,7 +47,7 @@ class AITool(Base):
     tool_name = Column(String(150), nullable=False, index=True)
     use_case = Column(Text)
     category = Column(String(100), index=True)
-    pricing_type = Column(enum.Enum(PricingType), nullable=False)
+    pricing_type = Column(SqlEnum(PricingType), nullable=False)
     avg_rating = Column(Float, default=0.0)
 
 
@@ -51,8 +58,8 @@ class AITool(Base):
     user_id = Column(Integer, nullable=False)
     rating = Column(Integer, nullable=False)
     comment = Column(Text)
-    status = Column(enum.Enum(ReviewStatus), default=ReviewStatus.PENDING)
-    
+    approval_status = Column(SqlEnum(ReviewStatus), default=ReviewStatus.PENDING)
+ 
  
 
  
