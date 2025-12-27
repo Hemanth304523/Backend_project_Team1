@@ -13,6 +13,7 @@ router = APIRouter(
 )
 
 
+# Dependency to get the database session
 def get_db():
     db = SessionLocal()
     try:
@@ -20,38 +21,38 @@ def get_db():
     finally:
         db.close()
 
-
+# Dependencies for database and user
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.post("/add-tool", status_code=status.HTTP_201_CREATED)
 async def add_tool(
-    tool: AIToolSchema,
+    tool: AIToolSchema,  # Use the Pydantic schema for validation
     db: db_dependency,
     current_user: user_dependency
 ):
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
-    db_tool = AITool(**tool.dict())
+    db_tool = AITool(**tool.dict())  # Convert Pydantic model to SQLAlchemy model
     db.add(db_tool)
     db.commit()
     db.refresh(db_tool)
     return db_tool
 
 
-@router.put("/Update_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/update_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_tool(
-    tool_id: int = Path(..., description="The ID of the tool to update"),
-    tool: AIToolSchema = ...,
+    tool_id: str = Path(..., description="The UUID of the tool to update"),
+    tool: AIToolSchema = ...,  # Use the Pydantic schema for validation
     db: db_dependency = ...,
     current_user: user_dependency = ...
 ):
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
-    db_tool = db.query(AITool).filter(AITool.id == tool_id).first()
+    db_tool = db.query(AITool).filter(AITool.id == str(tool_id)).first()
     if not db_tool:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
 
@@ -59,19 +60,19 @@ async def update_tool(
         setattr(db_tool, key, value)
 
     db.commit()
-    return
+    return {"message": "Tool updated successfully"}
 
 
 @router.delete("/delete_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tool(
-    tool_id: int = Path(..., description="The ID of the tool to delete"),
+    tool_id: str = Path(..., description="The UUID of the tool to delete"),
     db: db_dependency = ...,
     current_user: user_dependency = ...
 ):
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
-    db_tool = db.query(AITool).filter(AITool.id == tool_id).first()
+    db_tool = db.query(AITool).filter(AITool.id == str(tool_id)).first()
     if not db_tool:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
 
@@ -79,7 +80,7 @@ async def delete_tool(
     db.commit()
     return
 
-
+ 
 # ✨ ADVANCED FILTERING ENDPOINT
 @router.get("/tools/search", response_model=List[dict], status_code=status.HTTP_200_OK)
 async def search_tools(
@@ -90,12 +91,12 @@ async def search_tools(
     db: db_dependency = ...
 ):
     """Advanced search with multiple filters. Accessible to both admin and user.
-    
+   
     Query Parameters:
     - category: Optional category name (case-insensitive, partial match)
     - pricing_type: Optional pricing type dropdown (FREE, PAID, SUBSCRIPTION)
     - min_rating: Optional minimum rating dropdown (0-5 in 0.5 increments)
-    
+   
     Examples:
     - /tools/search (all tools)
     - /tools/search?category=AI
@@ -103,13 +104,13 @@ async def search_tools(
     - /tools/search?min_rating=4
     - /tools/search?category=AI&pricing_type=FREE&min_rating=4
     """
-    
+   
     query = db.query(AITool)
-    
+   
     # Apply category filter
     if category:
         query = query.filter(AITool.category.ilike(f"%{category}%"))
-    
+   
     # Apply pricing type filter
     if pricing_type:
         try:
@@ -120,13 +121,13 @@ async def search_tools(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Invalid pricing type. Must be one of: {', '.join([p.name for p in PricingType])}"
             )
-    
+   
     # Apply rating filter
     if min_rating is not None:
         query = query.filter(AITool.avg_rating >= min_rating)
-    
+   
     tools = query.all()
-    
+   
     if not tools:
         filters_applied = []
         if category:
@@ -135,13 +136,13 @@ async def search_tools(
             filters_applied.append(f"pricing_type='{pricing_type}'")
         if min_rating is not None:
             filters_applied.append(f"min_rating={min_rating}")
-        
+       
         filters_text = ", ".join(filters_applied) if filters_applied else "no filters"
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No tools found with {filters_text}"
         )
-    
+   
     return [
         {
             'id': str(t.id),
@@ -153,3 +154,4 @@ async def search_tools(
         }
         for t in tools
     ]
+ 
