@@ -2,8 +2,6 @@ import enum
 from uuid import uuid4
 from database import Base
 from sqlalchemy import Column, Float, Integer, String, Text, Enum as SqlEnum
-from pydantic import BaseModel
-from typing import Optional
 
 
 # Users Table
@@ -55,35 +53,3 @@ class Review(Base):
     user_rating = Column(Integer, nullable=False)
     comment = Column(Text)
     approval_status = Column(SqlEnum(ReviewStatus), default=ReviewStatus.PENDING)
-
-
-# Pydantic Schema for AITool
-class AIToolSchema(BaseModel):
-    tool_name: str
-    use_case: Optional[str]
-    category: Optional[str]
-    pricing_type: PricingType
-    avg_rating: Optional[float] = 0.0
-
-    class Config:
-        from_attributes = True
-
-
-# Pydantic Schema for Review
-class ReviewSchema(BaseModel):
-    tool_id: str
-    user_rating: int
-    comment: Optional[str]
-
-    class Config:
-        from_attributes = True
-
-
-# Pydantic Schema for Review Response
-class ReviewResponseSchema(ReviewSchema):
-    id: int
-    user_id: int
-    approval_status: ReviewStatus
-
-    class Config:
-        from_attributes = True

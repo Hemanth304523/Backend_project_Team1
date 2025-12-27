@@ -1,9 +1,8 @@
 from typing import Annotated, List, Optional
-from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
-from starlette import status
-from model import Users, AITool, AIToolSchema, Review, ReviewStatus, PricingType
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from model import  AITool, PricingType
+from schemas import AIToolSchema, AIToolResponseSchema
 from database import SessionLocal
 from routers.auth import get_current_user
 
@@ -26,30 +25,30 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.post("/add-tool", status_code=status.HTTP_201_CREATED)
+@router.post("/add_tool", status_code=status.HTTP_201_CREATED)
 async def add_tool(
-    tool: AIToolSchema,  # Use the Pydantic schema for validation
+    current_user: user_dependency,
     db: db_dependency,
-    current_user: user_dependency
+    tool: AIToolSchema
 ):
-    if current_user['role'] != 'admin':
+    if current_user['role'].lower() != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
-    db_tool = AITool(**tool.dict())  # Convert Pydantic model to SQLAlchemy model
+    db_tool = AITool(**tool.model_dump())  
     db.add(db_tool)
     db.commit()
     db.refresh(db_tool)
     return db_tool
 
 
-@router.put("/update_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/update_tool/{tool_id}", status_code=status.HTTP_200_OK)
 async def update_tool(
-    tool_id: str = Path(..., description="The UUID of the tool to update"),
-    tool: AIToolSchema = ...,  # Use the Pydantic schema for validation
-    db: db_dependency = ...,
-    current_user: user_dependency = ...
+    current_user: user_dependency, 
+    db: db_dependency ,
+    tool: AIToolSchema ,  
+    tool_id: str = Path(..., description="The UUID of the tool to update")
 ):
-    if current_user['role'] != 'admin':
+    if current_user['role'].lower() != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
     db_tool = db.query(AITool).filter(AITool.id == str(tool_id)).first()
@@ -65,11 +64,10 @@ async def update_tool(
 
 @router.delete("/delete_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tool(
-    tool_id: str = Path(..., description="The UUID of the tool to delete"),
-    db: db_dependency = ...,
-    current_user: user_dependency = ...
-):
-    if current_user['role'] != 'admin':
+    current_user: user_dependency,
+    db: db_dependency, 
+    tool_id: str = Path(..., description="The UUID of the tool to delete")):
+    if current_user['role'].lower() != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
     db_tool = db.query(AITool).filter(AITool.id == str(tool_id)).first()
@@ -82,13 +80,13 @@ async def delete_tool(
 
  
 # ✨ ADVANCED FILTERING ENDPOINT
-@router.get("/tools/search", response_model=List[dict], status_code=status.HTTP_200_OK)
+@router.get("/tools/search", response_model=List[AIToolResponseSchema], status_code=status.HTTP_200_OK)
 async def search_tools(
+    current_user: user_dependency,
+    db: db_dependency,
     category: Optional[str] = Query(None, description="Filter by category (partial match)"),
     pricing_type: Optional[str] = Query(None, description="Filter by pricing type", enum=["FREE", "PAID", "SUBSCRIPTION"]),
-    min_rating: Optional[float] = Query(None, ge=0, le=5, description="Filter by minimum rating (0-5)", enum=[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]),
-    user: user_dependency = ...,
-    db: db_dependency = ...
+    min_rating: Optional[float] = Query(None, ge=0, le=5, description="Filter by minimum rating (0-5)"),
 ):
     """Advanced search with multiple filters. Accessible to both admin and user.
    
@@ -143,15 +141,4 @@ async def search_tools(
             detail=f"No tools found with {filters_text}"
         )
    
-    return [
-        {
-            'id': str(t.id),
-            'tool_name': t.tool_name,
-            'use_case': t.use_case,
-            'category': t.category,
-            'pricing_type': t.pricing_type.value,
-            'avg_rating': t.avg_rating
-        }
-        for t in tools
-    ]
- 
+    return [AIToolResponseSchema.from_orm(tool) for tool in tools]

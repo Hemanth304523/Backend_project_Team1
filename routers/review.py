@@ -1,9 +1,8 @@
-from typing import Annotated
-from pydantic import BaseModel, Field
+from typing import Annotated, List
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, Path
-from starlette import status
-from model import Users, AITool, Review, ReviewStatus, ReviewSchema, ReviewResponseSchema
+from fastapi import APIRouter, Depends, HTTPException, Path, status, Query
+from model import AITool, Review, ReviewStatus
+from schemas import ReviewSchema, ReviewResponseSchema, AIToolResponseSchema
 from database import SessionLocal
 from .auth import get_current_user
  
@@ -25,23 +24,18 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.post('/add_review', response_model=dict, status_code=status.HTTP_201_CREATED)
+@router.post('/add_review', status_code=status.HTTP_201_CREATED, response_model=ReviewResponseSchema)
 def add_review(
-    review_data: ReviewSchema,
+    current_user: user_dependency,
     db: db_dependency,
-    current_user: user_dependency
+    review_data: ReviewSchema
 ):
     """Add a new review for an AI tool"""
     
-    # Verify that the tool exists
     tool = db.query(AITool).filter(AITool.id == review_data.tool_id).first()
     if not tool:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Tool not found'
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tool not found')
     
-    # Create new review
     new_review = Review(
         tool_id=review_data.tool_id,
         user_id=current_user['id'],
@@ -54,102 +48,69 @@ def add_review(
     db.commit()
     db.refresh(new_review)
     
-    return {
-        'id': new_review.id,
-        'tool_id': str(new_review.tool_id),
-        'user_id': new_review.user_id,
-        'user_rating': new_review.user_rating,
-        'comment': new_review.comment,
-        'approval_status': new_review.approval_status.value,
-        'message': 'Review submitted successfully and is pending approval'
-    }
+    review_out = ReviewResponseSchema(
+        id=new_review.id,
+        tool_id=new_review.tool_id,
+        user_id=new_review.user_id,
+        user_rating=new_review.user_rating,
+        comment=new_review.comment,
+        approval_status=new_review.approval_status
+    )
+    return review_out
 
 
-@router.get('/reviews/pending', response_model=list[dict])
+@router.get('/reviews/pending', status_code=status.HTTP_200_OK, response_model=List[ReviewResponseSchema])
 def get_pending_reviews(
-    db: db_dependency,
-    current_user: user_dependency
-):
-    if current_user['role'] == 'admin':
-        pending_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.PENDING).all()
-    elif current_user['role'] == 'user':
-        pending_reviews=db.query(Review).filter(Review.user_id==current_user['id']).filter(Review.approval_status == ReviewStatus.PENDING).all()
+    current_user: user_dependency,
+    db: db_dependency
+) -> List[ReviewResponseSchema]:
+    if current_user['role'].lower() == 'admin':
+        pending = db.query(Review).filter(Review.approval_status == ReviewStatus.PENDING)
+    elif current_user['role'].lower() == 'user':
+        pending = db.query(Review).filter(Review.user_id == current_user['id']).filter(Review.approval_status == ReviewStatus.PENDING)
     else:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Not authorized to access this resource'
-        )
-    return [
-        {
-            'id': review.id,
-            'tool_id': review.tool_id,
-            'user_id': review.user_id,
-            'user_rating': review.user_rating,
-            'comment': review.comment,
-            'approval_status': review.approval_status.value
-        }
-        for review in pending_reviews
-    ]
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Not authorized to access this resource')
+    return pending.all()
 
-@router.get('/reviews/aproved')
+
+@router.get('/reviews/approved', status_code=status.HTTP_200_OK, response_model=List[ReviewResponseSchema])
 def get_approved_reviews(
-    db: db_dependency,
-    current_user: user_dependency
-):
-    if current_user['role'] == 'admin':
-        approved_reviews = db.query(Review).filter(Review.approval_status == ReviewStatus.APPROVED).all()
-    elif current_user['role'] == 'user':
-        approved_reviews=db.query(Review).filter(Review.user_id==current_user['id']).filter(Review.approval_status == ReviewStatus.APPROVED).all()
+    current_user: user_dependency,
+    db: db_dependency
+) -> List[ReviewResponseSchema]:
+    if current_user['role'].lower() == 'admin':
+        approved = db.query(Review).filter(Review.approval_status == ReviewStatus.APPROVED)
+    elif current_user['role'].lower() == 'user':
+        approved = db.query(Review).filter(Review.user_id == current_user['id']).filter(Review.approval_status == ReviewStatus.APPROVED)
     else:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Not authorized to access this resource'
-        )   
-    return [
-        {
-            'id': review.id,
-            'tool_id': review.tool_id,
-            'user_id': review.user_id,
-            'user_rating': review.user_rating,
-            'comment': review.comment,
-            'approval_status': review.approval_status.value
-        }
-        for review in approved_reviews
-    ]
-@router.get('/all_reviews')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Not authorized to access this resource')
+    return approved.all()
+
+
+@router.get('/all_reviews', status_code=status.HTTP_200_OK, response_model=List[ReviewResponseSchema])
 def get_all_reviews(
-    db: db_dependency,
-    current_user: user_dependency
-):
-    if current_user['role'] != 'admin':
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Not authorized to access this resource'
-        )
-
-    all_reviews = db.query(Review).all()
-
-    return [
-        {
-            'id': review.id,
-            'tool_id': review.tool_id,
-            'user_id': review.user_id,
-            'user_rating': review.user_rating,
-            'comment': review.comment,
-            'approval_status': review.approval_status.value
-        }
-        for review in all_reviews
-    ]
+    current_user: user_dependency,
+    db: db_dependency
+) -> List[ReviewResponseSchema]:
+    if current_user['role'].lower() == 'admin':
+        all = db.query(Review)
+    elif current_user['role'].lower() == 'user':
+        all = db.query(Review).filter(Review.user_id == current_user['id'])
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Not authorized to access this resource')
+    return all.all()
 
 
 @router.patch("/approve_review/{review_id}", status_code=status.HTTP_200_OK)
 async def moderate_review(
-    review_id: int,
-    approval_status: ReviewStatus,
+    current_user: user_dependency,
     db: db_dependency,
-    current_user: user_dependency
+    review_id: int = Path(..., description="The ID of the review to moderate"),
+    approval_status: ReviewStatus = Query(..., description="New approval status (APPROVED, REJECTED, PENDING)")
 ):
-    if current_user['role'] != 'admin':
+    """Update review approval status and recalibrate tool rating"""
+    
+    if current_user['role'].lower() != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
     review = db.query(Review).filter(Review.id == review_id).first()
@@ -160,70 +121,47 @@ async def moderate_review(
     db.commit()
     db.refresh(review)
 
-    if approval_status == ReviewStatus.APPROVED:
-        tool = db.query(AITool).filter(AITool.id == review.tool_id).first()
-        if not tool:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
-
-        approved_reviews = db.query(Review).filter(
-            Review.tool_id == tool.id,
-            Review.approval_status == ReviewStatus.APPROVED
-        ).all()
-
-        tool.avg_rating = sum(r.rating for r in approved_reviews) / len(approved_reviews) if approved_reviews else 0.0
-        db.commit()
-        db.refresh(tool)
-
-    return {"message": f"Review {approval_status.value.lower()}", "review": review}
-
-@router.patch('/reject_review/{review_id}', status_code=status.HTTP_200_OK)
-def reject_review(
-    review_id: int,
-    db: db_dependency,
-    current_user: user_dependency
-):
-    if current_user['role'] != 'admin':
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Not authorized to access this resource'
-        )
-
-    review = db.query(Review).filter(Review.id == review_id).first()
-
-    if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Review not found'
-        )
-
-    review.approval_status = ReviewStatus.REJECTED
-    # Recalculate average rating for the tool
     tool = db.query(AITool).filter(AITool.id == review.tool_id).first()
     if not tool:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Tool not found'
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
+
     approved_reviews = db.query(Review).filter(
         Review.tool_id == tool.id,
         Review.approval_status == ReviewStatus.APPROVED
     ).all()
+
     if approved_reviews:
         tool.avg_rating = sum(r.user_rating for r in approved_reviews) / len(approved_reviews)
     else:
-        tool.avg_rating = 0.0  # No approved reviews left
+        tool.avg_rating = 0.0
+
     db.commit()
-    db.refresh(review)
+    db.refresh(tool)
+
+    review_out = ReviewResponseSchema(
+        id=review.id,
+        tool_id=review.tool_id,
+        user_id=review.user_id,
+        user_rating=review.user_rating,
+        comment=review.comment,
+        approval_status=review.approval_status
+    )
+
+    tool_out = AIToolResponseSchema(
+        id=str(tool.id),
+        tool_name=tool.tool_name,
+        use_case=tool.use_case,
+        category=tool.category,
+        pricing_type=tool.pricing_type,
+        avg_rating=tool.avg_rating
+    )
 
     return {
-        'id': review.id,
-        'tool_id': review.tool_id,
-        'user_id': review.user_id,
-        'user_rating': review.user_rating,
-        'comment': review.comment,
-        'approval_status': review.approval_status.value
+        "message": f"Review {approval_status.value.lower()} successfully",
+        "review": review_out,
+        "tool_updated": tool_out
     }
 
 
 
-   
+

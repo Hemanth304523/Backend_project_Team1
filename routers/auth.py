@@ -1,8 +1,6 @@
 from datetime import timedelta, datetime, timezone
-from operator import gt
-from typing import Annotated, Literal
+from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr, constr
 from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
@@ -11,6 +9,7 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 import logging
+from schemas import CreateUserRequest, Token
 
 router = APIRouter(
     prefix='/auth',
@@ -27,17 +26,6 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 logger = logging.getLogger("auth")
 logger.setLevel(logging.INFO)
-class CreateUserRequest(BaseModel):
-    username: str
-    email: EmailStr
-    first_name: str
-    last_name: str
-    password: str
-    role: Literal['USER', 'ADMIN','user', 'admin']
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 
 def get_db():
@@ -100,7 +88,7 @@ async def get_current_admin(user=Depends(get_current_user)):
     """
     Dependency to enforce admin-only access.
     """
-    if user['role'] != 'ADMIN':
+    if user['role'].lower() != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
     return user
 
