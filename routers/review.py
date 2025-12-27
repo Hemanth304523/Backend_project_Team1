@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Path
 from starlette import status
-from model import Users, AITool, Review, ReviewStatus
+from model import Users, AITool, Review, ReviewStatus, ReviewSchema, ReviewResponseSchema
 from database import SessionLocal
 from .auth import get_current_user
  
@@ -23,6 +23,46 @@ def get_db():
  
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
+
+
+@router.post('/add_review', response_model=dict, status_code=status.HTTP_201_CREATED)
+def add_review(
+    review_data: ReviewSchema,
+    db: db_dependency,
+    current_user: user_dependency
+):
+    """Add a new review for an AI tool"""
+    
+    # Verify that the tool exists
+    tool = db.query(AITool).filter(AITool.id == review_data.tool_id).first()
+    if not tool:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Tool not found'
+        )
+    
+    # Create new review
+    new_review = Review(
+        tool_id=review_data.tool_id,
+        user_id=current_user['id'],
+        user_rating=review_data.user_rating,
+        comment=review_data.comment,
+        approval_status=ReviewStatus.PENDING
+    )
+    
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+    
+    return {
+        'id': new_review.id,
+        'tool_id': str(new_review.tool_id),
+        'user_id': new_review.user_id,
+        'user_rating': new_review.user_rating,
+        'comment': new_review.comment,
+        'approval_status': new_review.approval_status.value,
+        'message': 'Review submitted successfully and is pending approval'
+    }
 
 
 @router.get('/reviews/pending', response_model=list[dict])
@@ -184,3 +224,6 @@ def reject_review(
         'approval_status': review.approval_status.value
     }
 
+
+
+   

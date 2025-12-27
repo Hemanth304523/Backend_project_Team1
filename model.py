@@ -66,3 +66,23 @@ class AIToolSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Pydantic Schema for Review
+class ReviewSchema(BaseModel):
+    tool_id: str
+    user_rating: int
+    comment: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# Pydantic Schema for Review Response
+class ReviewResponseSchema(ReviewSchema):
+    id: int
+    user_id: int
+    approval_status: ReviewStatus
+
+    class Config:
+        from_attributes = True
