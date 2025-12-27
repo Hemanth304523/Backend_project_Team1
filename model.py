@@ -1,21 +1,14 @@
 import enum
 from uuid import uuid4
 from database import Base
-from sqlalchemy import UUID, Column, Float, Integer, String, Boolean, ForeignKey, Text
-import enum
-from uuid import uuid4
-from datetime import datetime
- 
-from sqlalchemy import Column, Integer, Text, DateTime, Enum as SqlEnum, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-import enum
-from database import Base
- 
+from sqlalchemy import UUID, Column, Float, Integer, String, Text, Enum as SqlEnum
+from pydantic import BaseModel
+from typing import Optional
 
 
 class Users(Base):
     __tablename__ = 'users'
- 
+
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True)
     username = Column(String, unique=True)
@@ -23,26 +16,26 @@ class Users(Base):
     last_name = Column(String)
     hashed_password = Column(String)
     role = Column(String)
-    
 
-# Tool Model
 
+# Pricing Type Enum
 class PricingType(enum.Enum):
-
     FREE = "FREE"
     PAID = "PAID"
     SUBSCRIPTION = "SUBSCRIPTION"
 
-    # Review Status Enum
 
+# Review Status Enum
 class ReviewStatus(enum.Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
 
-class AITool(Base):
 
+# AI Tool Model
+class AITool(Base):
     __tablename__ = "ai_tools"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     tool_name = Column(String(150), nullable=False, index=True)
     use_case = Column(Text)
@@ -51,16 +44,25 @@ class AITool(Base):
     avg_rating = Column(Float, default=0.0)
 
 
-# Review Modelclass Review(Base):
+# Review Model
+class Review(Base):
     __tablename__ = "reviews"
+
     id = Column(Integer, primary_key=True, index=True)
     tool_id = Column(UUID(as_uuid=True), nullable=False)
     user_id = Column(Integer, nullable=False)
-    rating = Column(Integer, nullable=False)
+    user_rating = Column(Integer, nullable=False)
     comment = Column(Text)
     approval_status = Column(SqlEnum(ReviewStatus), default=ReviewStatus.PENDING)
- 
- 
 
- 
- 
+
+# Pydantic Schema for AITool
+class AIToolSchema(BaseModel):
+    tool_name: str
+    use_case: Optional[str]
+    category: Optional[str]
+    pricing_type: PricingType
+    avg_rating: Optional[float] = 0.0
+
+    class Config:
+        orm_mode = True

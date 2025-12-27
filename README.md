@@ -1,3 +1,65 @@
+# AI Tool Finder Backend
+
+## Instructions to Run the Application
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd Backend_project_Team1
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirement.txt
+   ```
+
+3. Run the application:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+4. Access the API documentation at:
+   - Swagger UI: `http://127.0.0.1:8000/docs`
+   - ReDoc: `http://127.0.0.1:8000/redoc`
+
+## API Examples
+
+### Fetch All Tools
+**GET** `/tools`
+
+Query Parameters:
+- `category` (optional): Filter by category.
+- `min_rating` (optional): Minimum average rating.
+- `pricing_type` (optional): Filter by pricing type.
+
+Example:
+```bash
+curl "http://127.0.0.1:8000/tools?category=NLP&min_rating=4&pricing_type=FREE"
+```
+
+### Submit a Review
+**POST** `/review`
+
+Payload:
+```json
+{
+  "tool_id": "tool-uuid",
+  "user_rating": 5,
+  "comment": "Great tool!"
+}
+```
+
+### Approve a Review
+**PATCH** `/approve_review/{review_id}`
+
+Payload:
+```json
+{
+  "approval_status": "APPROVED"
+}
+```
+
+---
 
 Only tools matching **all conditions** are returned.
 
