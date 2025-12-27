@@ -38,25 +38,51 @@ async def add_tool(
     db.refresh(tool)
     return tool
 
-@router.patch("/Approve-User_access",status_code=status.HTTP_200_OK)
-async def approve_user_access(
-    user_id: int,
+@router.patch("/approve_review/{review_id}", status_code=status.HTTP_200_OK)
+async def moderate_review(
+    review_id: int,
+    approval_status: ReviewStatus,
     db: db_dependency,
     current_user: user_dependency
 ):
+    # Ensure the user is an admin
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
-    user = db.query(Users).filter(Users.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    # Fetch the review by ID
+    review = db.query(Review).filter(Review.id == review_id).first()
+    if not review:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Review not found")
 
-    user.is_approved = True
+    # Update the review's approval status
+    review.status = approval_status
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(review)
 
-@router.put("/Upadte_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
+    # Recalculate the average rating for the associated tool if the review is approved
+    if approval_status == ReviewStatus.APPROVED:
+        tool = db.query(AITool).filter(AITool.id == review.tool_id).first()
+        if not tool:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
+
+        # Fetch all approved reviews for the tool
+        approved_reviews = db.query(Review).filter(
+            Review.tool_id == tool.id,
+            Review.status == ReviewStatus.APPROVED
+        ).all()
+
+        # Calculate the new average rating
+        if approved_reviews:
+            tool.avg_rating = sum(r.rating for r in approved_reviews) / len(approved_reviews)
+        else:
+            tool.avg_rating = 0.0  # No approved reviews, reset to 0
+
+        db.commit()
+        db.refresh(tool)
+
+    return {"message": f"Review {approval_status.value.lower()}", "review": review}
+
+@router.put("/Update_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_tool(
     tool_id: int = Path(..., description="The ID of the tool to update"),
     tool: AITool = ...,
@@ -75,3 +101,21 @@ async def update_tool(
     
     db.commit()
     return
+
+@router.delete("/delete_tool/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_tool(
+    tool_id: int = Path(..., description="The ID of the tool to delete"),
+    db: db_dependency = ...,
+    current_user: user_dependency = ...
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+    
+    db_tool = db.query(AITool).filter(AITool.id == tool_id).first()
+    if not db_tool:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tool not found")
+    
+    db.delete(db_tool)
+    db.commit()
+    return
+
