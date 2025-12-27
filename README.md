@@ -277,4 +277,12 @@ avg_rating = SUM(approved_ratings) / COUNT(approved_reviews)
 6. **Extensibility:** Additional filters, pagination, or sorting can be added without modifying core logic.
 
 ---
+# AI Tool Finder - Team Contributions
 
+## Team Members and Responsibilities
+
+| Area of Work                          | Team Members                                  | Responsibilities |
+|--------------------------------------|-----------------------------------------------|-----------------|
+| **Authentication & Authorization**    | Hem Kishore Pradhan & Arya Aditanshu Behera  | - Implement user registration and login <br> - Secure password hashing <br> - JWT-based access control for users and admins |
+| **API Design / Routes**               | Hemanthbugata & Raghul Jayaraj               | - Define API `POST()`, `PUT()`, `PATCH()`, and `DELETE()` endpoints for users and admins <br> - Design request/response schemas <br> - Ensure RESTful API standards and consistency |
+| **Database Modeling / DB Design / API** | Ravee Raghul C & Amal Falah                  | - Design database schema for AI tools, reviews, and users <br> - Implement relationships and constraints <br> - Optimize for filtering and rating computation <br> - Define API `GET()` endpoints. |
