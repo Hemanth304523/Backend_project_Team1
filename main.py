@@ -1,19 +1,13 @@
 from fastapi import FastAPI
+from app.routers import ai_tools, reviews, admin
 
-import model
-from database import engine
+app = FastAPI(title="AI Tool Finder Backend")
 
-
-from routers import auth,admin,user,tool,review
-app=FastAPI()
-
-
-
-model.Base.metadata.create_all(bind=engine)
-
-app.include_router(auth.router)
+# Include routers
+app.include_router(ai_tools.router)
+app.include_router(reviews.router)
 app.include_router(admin.router)
-app.include_router(user.router)
-app.include_router(tool.router)
-app.include_router(review.router)
 
+@app.get("/")
+def root():
+    return {"message": "Welcome to AI Tool Finder Backend"}
