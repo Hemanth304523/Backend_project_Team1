@@ -4,7 +4,7 @@
 
 ## Setup & Run Instructions
 
-    ```bash
+    ```
     # 1. Clone repository
     git clone https://github.com/Hemanth304523/Backend_project_Team1.git
      cd Backend_project_Team1
@@ -27,6 +27,7 @@
     
     # 6. Run application
     uvicorn main:app --reload --port 8080
+    ```
 
 **AI Tool Finder** is a FastAPI + PostgreSQL backend platform for discovering and reviewing AI tools with secure user authentication and admin moderation.
 It supports advanced filtering, dynamic rating aggregation from approved reviews, and strict role-based access control.
