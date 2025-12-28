@@ -3,9 +3,11 @@
 ## Project Overview
 **AI Tool Finder** is a robust backend platform for discovering, filtering, and reviewing AI tools. It is designed to simulate a real-world backend system focusing on data integrity, API design, advanced filtering, rating computation, and admin moderation. The platform supports multi-condition queries, ensures accurate aggregation of ratings, and provides a clear separation between user and admin functionalities.
 
-## DataFlow
+## Data Flow Architecture
 
-    ![Architecture](Data-Flow.png)
+    <p align="center">
+      <img src="Data-Flow.png" alt="Data Flow Architecture" width="850">
+    </p>
 
     
 
