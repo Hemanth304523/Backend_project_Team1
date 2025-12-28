@@ -4,8 +4,8 @@
 
 ## Setup & Run Instructions
 
-    ```
-    # 1. Clone repository
+    
+    ```# 1. Clone repository
     git clone https://github.com/Hemanth304523/Backend_project_Team1.git
      cd Backend_project_Team1
 
