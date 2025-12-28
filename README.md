@@ -5,10 +5,9 @@
 
 ## Data Flow Architecture
 
-    <p align="center">
-      <img src="Data-Flow.png" alt="Data Flow Architecture" width="850">
-    </p>
-
+<p align="center">
+  <img src="Data-Flow.png" alt="Data Flow Architecture" width="850">
+</p>
     
 
 ## Technology Stack
