@@ -5,6 +5,8 @@
 
 ## DataFlow
 
+    ![Architecture](data-flow.png)
+
     
 
 ## Technology Stack
