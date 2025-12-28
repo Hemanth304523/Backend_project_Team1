@@ -2,6 +2,9 @@
 
 ## Project Overview
 
+**AI Tool Finder** is a FastAPI + PostgreSQL backend platform for discovering and reviewing AI tools with secure user authentication and admin moderation.
+It supports advanced filtering, dynamic rating aggregation from approved reviews, and strict role-based access control.
+Designed to simulate real-world backend workflows with clean API design, data integrity, and extensibility.
 ## Setup & Run Instructions
 
     
@@ -35,10 +38,6 @@
     
         uvicorn main:app --reload --port 8080
     ```
-
-**AI Tool Finder** is a FastAPI + PostgreSQL backend platform for discovering and reviewing AI tools with secure user authentication and admin moderation.
-It supports advanced filtering, dynamic rating aggregation from approved reviews, and strict role-based access control.
-Designed to simulate real-world backend workflows with clean API design, data integrity, and extensibility.
 
 ## Data Flow Architecture
 
