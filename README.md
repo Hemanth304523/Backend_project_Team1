@@ -1,7 +1,36 @@
 # AI Tool Finder - Backend Documentation
 
 ## Project Overview
-**AI Tool Finder** is a robust backend platform for discovering, filtering, and reviewing AI tools. It is designed to simulate a real-world backend system focusing on data integrity, API design, advanced filtering, rating computation, and admin moderation. The platform supports multi-condition queries, ensures accurate aggregation of ratings, and provides a clear separation between user and admin functionalities.
+
+## Setup & Run Instructions
+
+    ```bash
+    # 1. Clone repository
+    git clone https://github.com/Hemanth304523/Backend_project_Team1.git
+     cd Backend_project_Team1
+
+    
+    # 2. Create virtual environment
+    python -m venv .venv
+    
+    # 3. Activate virtual environment
+    # Windows
+    .venv\Scripts\activate
+    # macOS / Linux
+    source .venv/bin/activate
+    
+    # 4. Install dependencies
+    pip install -r requirements.txt
+    
+    # 5. Create .gitignore
+    echo .venv/ > .gitignore
+    
+    # 6. Run application
+    uvicorn main:app --reload --port 8080
+
+**AI Tool Finder** is a FastAPI + PostgreSQL backend platform for discovering and reviewing AI tools with secure user authentication and admin moderation.
+It supports advanced filtering, dynamic rating aggregation from approved reviews, and strict role-based access control.
+Designed to simulate real-world backend workflows with clean API design, data integrity, and extensibility.
 
 ## Data Flow Architecture
 
