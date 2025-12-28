@@ -3,6 +3,37 @@
 ## Project Overview
 **AI Tool Finder** is a robust backend platform for discovering, filtering, and reviewing AI tools. It is designed to simulate a real-world backend system focusing on data integrity, API design, advanced filtering, rating computation, and admin moderation. The platform supports multi-condition queries, ensures accurate aggregation of ratings, and provides a clear separation between user and admin functionalities.
 
+## DataFlow
+
+    
+
+## Technology Stack
+## Backend
+
+    Framework: FastAPI (Python)
+    
+    High-performance async REST APIs
+    
+    Automatic OpenAPI (Swagger) documentation
+    
+    Language: Python 3.10+
+    
+    Data Validation: Pydantic
+    
+    Authentication: JWT (JSON Web Tokens)
+    
+    Authorization: Role-based access control (USER, ADMIN)
+    
+    Password Security: bcrypt / passlib hashing
+
+## Database
+
+  Primary Database: PostgreSQL
+  
+  Strong relational integrity
+  
+  ACID-compliant transactions
+
 ---
 
 ## Core Data Models
