@@ -5,28 +5,28 @@
 ## Setup & Run Instructions
 
     
-    ```# 1. Clone repository
+    1. Clone repository
     git clone https://github.com/Hemanth304523/Backend_project_Team1.git
      cd Backend_project_Team1
 
     
-    # 2. Create virtual environment
+    2. Create virtual environment
     python -m venv .venv
     
-    # 3. Activate virtual environment
-    # Windows
-    .venv\Scripts\activate
-    # macOS / Linux
-    source .venv/bin/activate
+    3. Activate virtual environment
+        # Windows
+        .venv\Scripts\activate
+        # macOS / Linux
+        source .venv/bin/activate
     
-    # 4. Install dependencies
-    pip install -r requirements.txt
+    4. Install dependencies
+        pip install -r requirements.txt
     
-    # 5. Create .gitignore
-    echo .venv/ > .gitignore
+    5. Create .gitignore
+        echo .venv/ > .gitignore
     
-    # 6. Run application
-    uvicorn main:app --reload --port 8080
+    6. Run application
+        uvicorn main:app --reload --port 8080
     ```
 
 **AI Tool Finder** is a FastAPI + PostgreSQL backend platform for discovering and reviewing AI tools with secure user authentication and admin moderation.
