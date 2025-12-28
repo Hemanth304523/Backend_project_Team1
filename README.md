@@ -6,26 +6,33 @@
 
     
     1. Clone repository
-    git clone https://github.com/Hemanth304523/Backend_project_Team1.git
-     cd Backend_project_Team1
+    
+        git clone https://github.com/Hemanth304523/Backend_project_Team1.git
+        
+        cd Backend_project_Team1
 
     
     2. Create virtual environment
-    python -m venv .venv
     
+        python -m venv .venv
+        
     3. Activate virtual environment
+    
         # Windows
         .venv\Scripts\activate
         # macOS / Linux
         source .venv/bin/activate
     
     4. Install dependencies
+    
         pip install -r requirements.txt
     
     5. Create .gitignore
+    
         echo .venv/ > .gitignore
     
     6. Run application
+    
         uvicorn main:app --reload --port 8080
     ```
 
