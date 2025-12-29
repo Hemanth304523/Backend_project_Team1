@@ -2,11 +2,7 @@ import enum
 from uuid import uuid4
 from database import Base
 from sqlalchemy import Column, Float, Integer, String, Text, Enum as SqlEnum
-<<<<<<< HEAD
-from pydantic import BaseModel
-from typing import Optional
-=======
->>>>>>> d11652fbdb6b96db5b12bdd90deda1174a26a44a
+
 
 
 # Users Table

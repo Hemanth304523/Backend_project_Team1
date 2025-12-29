@@ -1,10 +1,5 @@
 from datetime import timedelta, datetime, timezone
-<<<<<<< HEAD
-from operator import gt
-from typing import Annotated, Literal
-=======
 from typing import Annotated
->>>>>>> d11652fbdb6b96db5b12bdd90deda1174a26a44a
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
@@ -31,20 +26,6 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 logger = logging.getLogger("auth")
 logger.setLevel(logging.INFO)
-<<<<<<< HEAD
-class CreateUserRequest(BaseModel):
-    username: str
-    email: EmailStr
-    first_name: str
-    last_name: str
-    password: str
-    role: Literal['USER', 'ADMIN','user', 'admin']
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-=======
->>>>>>> d11652fbdb6b96db5b12bdd90deda1174a26a44a
 
 
 def get_db():

@@ -24,7 +24,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.post('/add_review', status_code=status.HTTP_201_CREATED, response_model=ReviewResponseSchema)
+@router.post('/user_add_review', status_code=status.HTTP_201_CREATED, response_model=ReviewResponseSchema)
 def add_review(
     current_user: user_dependency,
     db: db_dependency,
